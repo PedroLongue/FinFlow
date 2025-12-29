@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { prisma } from "../db/prisma.js";
+import { categorizeBillAI } from "../services/billCategorizer.js";
 
 interface AuthRequest extends Request {
   userId?: string;
@@ -31,12 +32,40 @@ export const createBill = async (req: AuthRequest, res: Response) => {
     paidAt?: string | null;
   };
 
+  const normalizedBarcode = barcode ? String(barcode).replace(/\D/g, "") : null;
+
+  if (normalizedBarcode && normalizedBarcode.trim() !== "") {
+    const existingBillWithBarcode = await prisma.bill.findFirst({
+      where: {
+        userId,
+        barcode: normalizedBarcode,
+      },
+    });
+
+    if (existingBillWithBarcode) {
+      return res.status(409).json({
+        errors: [`Código de barras já cadastrado para este usuário`],
+      });
+    }
+  }
+
+  let finalCategory = category?.trim();
+
+  if (!finalCategory) {
+    const ai = await categorizeBillAI({
+      title,
+      description,
+      barcode: normalizedBarcode,
+    });
+    finalCategory = ai.category;
+  }
+
   const bill = await prisma.bill.create({
     data: {
       title: String(title).trim(),
       amount: Number(amount),
       dueDate: new Date(dueDate),
-      category: String(category).trim(),
+      category: finalCategory,
       status: status ?? "PENDING",
       barcode: barcode?.trim() || null,
       description: description?.trim() || null,
