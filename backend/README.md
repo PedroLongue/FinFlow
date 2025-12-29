@@ -7,3 +7,7 @@ Sempre que um **model** for criado ou alterado em `prisma/schema.prisma`, é obr
 ```bash
 npx prisma migrate dev --name NOME_DA_MIGRACAO
 ```
+
+```bash
+npx prisma generate
+```

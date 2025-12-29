@@ -1,10 +1,18 @@
 import { Router } from "express";
-import { login, register } from "../controllers/auth.controller";
+import {
+  getCurrentUser,
+  getUserById,
+  login,
+  register,
+  updateUserPhone,
+} from "../controllers/auth.controller";
 import {
   loginValidation,
+  phoneValidation,
   userCreateValidation,
 } from "../middlewares/userValidation.middlewares";
 import { handleValidation } from "../middlewares/handleValidation.middlewares";
+import { authGuard } from "../middlewares/authGuard.middlewares";
 
 const userRoutes = Router();
 
@@ -16,5 +24,17 @@ userRoutes.post(
 );
 
 userRoutes.post("/login", loginValidation(), handleValidation, login);
+
+userRoutes.get("/profile", authGuard, getCurrentUser);
+
+userRoutes.patch(
+  "/profile",
+  authGuard,
+  phoneValidation(),
+  handleValidation,
+  updateUserPhone
+);
+
+userRoutes.get("/:id", getUserById);
 
 export default userRoutes;

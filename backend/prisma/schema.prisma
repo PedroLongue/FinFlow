@@ -8,11 +8,13 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
-  name String
-  email String @unique
-  password String 
-  phone String?
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  phone     String?
 
   bills Bill[]
 
@@ -20,31 +22,31 @@ model User {
 }
 
 model Bill {
-  id String @id @default(uuid())
-  title String
-  amount Float
-  dueDate DateTime @map("due_date")
-  category String
-  status BillStatus @default(PENDING) @map("status")
-  barcode String? @unique @map("barcode")
-  description String? @map("description")  
-  createdAt DateTime @default(now()) @map("created_at")
-  paidAt DateTime? @map("paid_at")
+  id          String     @id @default(uuid())
+  title       String
+  amount      Float
+  dueDate     DateTime   @map("due_date")
+  category    String
+  status      BillStatus @default(PENDING) @map("status")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  barcode     String?    @unique @map("barcode")
+  description String?    @map("description")
+  paidAt      DateTime?  @map("paid_at")
 
   userId String @map("user_id")
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("bills")
   @@index([userId])
   @@index([dueDate])
   @@index([category])
   @@index([status])
+  @@map("bills")
 }
 
 enum BillStatus {
-  PENDING      // Pendente
-  PAID         // Pago
-  OVERDUE      // Vencido
-  SCHEDULED    // Agendado para pagamento
-  CANCELLED    // Cancelado
+  PENDING // Pendente
+  PAID // Pago
+  OVERDUE // Vencido
+  SCHEDULED // Agendado para pagamento
+  CANCELLED // Cancelado
 }

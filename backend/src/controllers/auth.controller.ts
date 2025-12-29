@@ -3,6 +3,10 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { prisma } from "../db/prisma.js";
 
+interface IAuthRequest extends Request {
+  userId?: string;
+}
+
 const signToken = (userId: string) => {
   const secret = process.env.JWT_SECRET;
   if (!secret) throw new Error("JWT_SECRET não definido");
@@ -32,7 +36,13 @@ export const register = async (req: Request, res: Response) => {
       email: normalizedEmail,
       password: hashed,
     },
-    select: { id: true, name: true, email: true },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      createdAt: true,
+      isActive: true,
+    },
   });
 
   const token = signToken(user.id);
@@ -50,11 +60,80 @@ export const login = async (req: Request, res: Response) => {
   if (!user) return res.status(401).json({ erros: ["Credenciais inválidas"] });
 
   const ok = await bcrypt.compare(password, user.password);
-  if (!ok) return res.status(401).json({ erros: ["Credenciais inválidas"] });
+  if (!ok) return res.status(401).json({ erros: ["Senha inválida"] });
 
   const token = signToken(user.id);
+
   return res.json({
     user: { id: user.id, name: user.name, email: user.email },
     token,
   });
+};
+
+export const getCurrentUser = async (req: IAuthRequest, res: Response) => {
+  const userId = req.userId;
+
+  if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      createdAt: true,
+      isActive: true,
+    },
+  });
+
+  if (!user)
+    return res.status(404).json({ errors: ["Usuário não encontrado"] });
+  return res.json({ user });
+};
+
+export const getUserById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const user = await prisma.user.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      createdAt: true,
+      isActive: true,
+    },
+  });
+
+  if (!user)
+    return res.status(404).json({ errors: ["Usuário não encontrado"] });
+
+  return res.json({ user });
+};
+
+export const updateUserPhone = async (req: IAuthRequest, res: Response) => {
+  const userId = req.userId;
+
+  if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
+  const { phone } = req.body;
+
+  const normalizedPhone =
+    phone === null || phone === undefined ? null : String(phone).trim();
+
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: { phone: normalizedPhone },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      createdAt: true,
+      isActive: true,
+    },
+  });
+
+  return res.json({ user: updatedUser });
 };

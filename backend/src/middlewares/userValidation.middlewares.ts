@@ -49,3 +49,22 @@ export const loginValidation = () => {
     body("password").isString().withMessage("A senha é obrigatória."),
   ];
 };
+
+export const phoneValidation = () => {
+  return [
+    body("phone")
+      .optional({ nullable: true })
+      .custom((value) => {
+        if (value === null || value === undefined) return true;
+
+        const digits = String(value).replace(/\D/g, "");
+
+        if (!(digits.length === 10 || digits.length === 11)) {
+          throw new Error(
+            "Telefone inválido. Use DDD + número (10 ou 11 dígitos)."
+          );
+        }
+        return true;
+      }),
+  ];
+};

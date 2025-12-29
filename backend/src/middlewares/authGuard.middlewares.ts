@@ -1,9 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET!;
-if (!JWT_SECRET) throw new Error("JWT_SECRET não definido no .env");
-
 interface AuthRequest extends Request {
   userId?: string;
 }
@@ -13,6 +10,8 @@ export const authGuard = (
   res: Response,
   next: NextFunction
 ) => {
+  const JWT_SECRET = process.env.JWT_SECRET!;
+  if (!JWT_SECRET) throw new Error("JWT_SECRET não definido no .env");
   const header = req.headers.authorization;
 
   if (!header?.startsWith("Bearer ")) {
@@ -22,11 +21,11 @@ export const authGuard = (
   const token = header.slice("Bearer ".length).trim();
 
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as { sub?: string };
-    if (!payload.sub)
-      return res.status(401).json({ erros: ["Token inválido"] });
+    const payload = jwt.verify(token, JWT_SECRET) as { id?: string };
 
-    req.userId = payload.sub;
+    if (!payload.id) return res.status(401).json({ erros: ["Token inválido"] });
+
+    req.userId = payload.id;
     return next();
   } catch {
     return res.status(401).json({ erros: ["Token inválido"] });
