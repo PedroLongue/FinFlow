@@ -26,7 +26,7 @@ model Bill {
   title       String
   amount      Float
   dueDate     DateTime   @map("due_date")
-  category    String
+  category    String?
   status      BillStatus @default(PENDING) @map("status")
   createdAt   DateTime   @default(now()) @map("created_at")
   barcode     String?    @unique @map("barcode")
