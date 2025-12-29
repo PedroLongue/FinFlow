@@ -11,12 +11,10 @@ const signToken = (userId: string) => {
 };
 
 export const register = async (req: Request, res: Response) => {
-  const { name, email, password, phone } = req.body;
+  const { name, email, password, confirmPassword } = req.body;
 
-  if (!name || !email || !password) {
-    return res
-      .status(400)
-      .json({ erros: ["name, email e password são obrigatórios"] });
+  if (password !== confirmPassword) {
+    return res.status(422).json({ errors: ["As senhas não coincidem."] });
   }
 
   const normalizedEmail = email.trim().toLowerCase();
@@ -33,9 +31,8 @@ export const register = async (req: Request, res: Response) => {
       name: name.trim(),
       email: normalizedEmail,
       password: hashed,
-      phone: phone?.trim() || null,
     },
-    select: { id: true, name: true, email: true, phone: true },
+    select: { id: true, name: true, email: true },
   });
 
   const token = signToken(user.id);
@@ -44,12 +41,6 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res
-      .status(400)
-      .json({ erros: ["email e password são obrigatórios"] });
-  }
 
   const normalizedEmail = email.trim().toLowerCase();
 
