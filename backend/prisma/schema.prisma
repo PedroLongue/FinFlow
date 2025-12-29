@@ -12,4 +12,39 @@ model User {
   name String
   email String @unique
   password String 
+  phone String?
+
+  bills Bill[]
+
+  @@map("users")
+}
+
+model Bill {
+  id String @id @default(uuid())
+  title String
+  amount Float
+  dueDate DateTime @map("due_date")
+  category String
+  status BillStatus @default(PENDING) @map("status")
+  barcode String? @unique @map("barcode")
+  description String? @map("description")  
+  createdAt DateTime @default(now()) @map("created_at")
+  paidAt DateTime? @map("paid_at")
+
+  userId String @map("user_id")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("bills")
+  @@index([userId])
+  @@index([dueDate])
+  @@index([category])
+  @@index([status])
+}
+
+enum BillStatus {
+  PENDING      // Pendente
+  PAID         // Pago
+  OVERDUE      // Vencido
+  SCHEDULED    // Agendado para pagamento
+  CANCELLED    // Cancelado
 }
