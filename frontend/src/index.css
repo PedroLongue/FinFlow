@@ -1,0 +1,349 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+@import "tailwindcss";
+
+/* =========================================================
+   Tailwind v4 theme tokens (equivalente ao tailwind.config)
+   ========================================================= */
+@theme {
+  /* Font */
+  --font-sans: Inter, system-ui, sans-serif;
+
+  /* Radius (compat) */
+  --radius: 0.75rem;
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  /* Container (se quiser usar `container`) */
+  --container-padding: 2rem;
+  --breakpoint-2xl: 1400px;
+
+  /* Colors mapped to your CSS vars (hsl tokens) */
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+
+  /* Sidebar tokens -> generates bg-sidebar, border-sidebar-border, etc. */
+  --color-sidebar: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  /* Background images (so you can use bg-gradient-primary, etc) */
+  --background-image-gradient-primary: var(--gradient-primary);
+  --background-image-gradient-success: var(--gradient-success);
+  --background-image-gradient-card: var(--gradient-card);
+  --background-image-gradient-hero: var(--gradient-hero);
+
+  /* Shadows (so you can use shadow-glow, shadow-card, shadow-elevated) */
+  --shadow-glow: var(--shadow-glow);
+  --shadow-card: var(--shadow-card);
+  --shadow-elevated: var(--shadow-elevated);
+
+  /* Custom animations (so you can use animate-fade-in etc as tokens if quiser) */
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-fade-in: fadeIn 0.5s ease-out forwards;
+  --animate-slide-up: slideUp 0.5s ease-out forwards;
+  --animate-scale-in: scaleIn 0.3s ease-out forwards;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-shimmer: shimmer 2s linear infinite;
+}
+
+/* =========================================================
+   Base variables + dark mode (class)
+   ========================================================= */
+@layer base {
+  :root {
+    /* FinFlow Design System */
+    --background: 222 30% 8%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 25% 12%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 25% 12%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 30% 8%;
+
+    --secondary: 222 20% 18%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 222 20% 16%;
+    --muted-foreground: 215 20% 55%;
+
+    --accent: 160 84% 39%;
+    --accent-foreground: 222 30% 8%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 222 30% 8%;
+
+    --success: 160 84% 39%;
+    --success-foreground: 222 30% 8%;
+
+    --border: 222 20% 20%;
+    --input: 222 20% 20%;
+    --ring: 217 91% 60%;
+
+    --radius: 0.75rem;
+
+    /* Custom FinFlow tokens */
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(217 91% 60%) 0%,
+      hsl(200 90% 50%) 100%
+    );
+    --gradient-success: linear-gradient(
+      135deg,
+      hsl(160 84% 39%) 0%,
+      hsl(140 70% 45%) 100%
+    );
+    --gradient-card: linear-gradient(
+      180deg,
+      hsl(222 25% 14%) 0%,
+      hsl(222 25% 10%) 100%
+    );
+    --gradient-hero: linear-gradient(
+      135deg,
+      hsl(222 30% 8%) 0%,
+      hsl(222 35% 12%) 50%,
+      hsl(217 40% 15%) 100%
+    );
+
+    --shadow-glow: 0 0 40px hsl(217 91% 60% / 0.15);
+    --shadow-card: 0 4px 24px hsl(222 30% 5% / 0.4);
+    --shadow-elevated: 0 8px 32px hsl(222 30% 5% / 0.6);
+
+    --sidebar-background: 222 25% 10%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 222 30% 8%;
+    --sidebar-accent: 222 20% 16%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 222 20% 18%;
+    --sidebar-ring: 217 91% 60%;
+  }
+
+  .dark {
+    --background: 222 30% 8%;
+    --foreground: 210 40% 98%;
+    --card: 222 25% 12%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 25% 12%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 30% 8%;
+    --secondary: 222 20% 18%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 222 20% 16%;
+    --muted-foreground: 215 20% 55%;
+    --accent: 160 84% 39%;
+    --accent-foreground: 222 30% 8%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 222 20% 20%;
+    --input: 222 20% 20%;
+    --ring: 217 91% 60%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: "Inter", system-ui, sans-serif;
+  }
+}
+
+/* =========================================================
+   Utilities (iguais às suas)
+   ========================================================= */
+@layer utilities {
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-xl border border-border/50;
+  }
+
+  .text-gradient-primary {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-primary);
+  }
+
+  .text-gradient-success {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-success);
+  }
+
+  .bg-gradient-primary {
+    background-image: var(--gradient-primary);
+  }
+
+  .bg-gradient-success {
+    background-image: var(--gradient-success);
+  }
+
+  .bg-gradient-card {
+    background-image: var(--gradient-card);
+  }
+
+  .bg-gradient-hero {
+    background-image: var(--gradient-hero);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  .shadow-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out forwards;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s linear infinite;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(217 91% 60% / 0.1),
+      transparent
+    );
+    background-size: 200% 100%;
+  }
+}
+
+/* =========================================================
+   Keyframes
+   ========================================================= */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* =========================================================
+   Custom scrollbar
+   ========================================================= */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
