@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { clearAuthCookie, setAuthCookie } from "../utils/authCookie.js";
 import { prisma } from "../db/prisma.js";
 
 interface IAuthRequest extends Request {
@@ -46,7 +47,10 @@ export const register = async (req: Request, res: Response) => {
   });
 
   const token = signToken(user.id);
-  return res.status(201).json({ user, token });
+  setAuthCookie(res, token);
+  return res.json({
+    user: { id: user.id, name: user.name, email: user.email },
+  });
 };
 
 export const login = async (req: Request, res: Response) => {
@@ -64,10 +68,16 @@ export const login = async (req: Request, res: Response) => {
 
   const token = signToken(user.id);
 
+  setAuthCookie(res, token);
+
   return res.json({
     user: { id: user.id, name: user.name, email: user.email },
-    token,
   });
+};
+
+export const logout = async (_req: Request, res: Response) => {
+  clearAuthCookie(res);
+  return res.status(204).send();
 };
 
 export const getCurrentUser = async (req: IAuthRequest, res: Response) => {

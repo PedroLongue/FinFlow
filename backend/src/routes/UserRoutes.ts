@@ -3,6 +3,7 @@ import {
   getCurrentUser,
   getUserById,
   login,
+  logout,
   register,
   updateUserPhone,
 } from "../controllers/auth.controller";
@@ -24,6 +25,8 @@ userRoutes.post(
 );
 
 userRoutes.post("/login", loginValidation(), handleValidation, login);
+
+userRoutes.post("/logout", authGuard, logout);
 
 userRoutes.get("/profile", authGuard, getCurrentUser);
 
