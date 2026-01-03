@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   Zap,
@@ -15,6 +15,7 @@ import { cn } from "../../lib/utils";
 import { useIsMobile } from "../../hooks/useMobile";
 import { Button } from "../ui/button";
 import { useAuthActions } from "../../hooks/useAuth";
+import { useOnClickOutside } from "../../hooks/useOnClickOutside";
 
 const menu = [
   { id: "dashboard", label: "Dashboard", to: "/", icon: Home },
@@ -39,6 +40,14 @@ export const Sidebar = () => {
   const { logout } = useAuthActions();
 
   const isMobile = useIsMobile();
+
+  const sidebarRef = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(sidebarRef, () => {
+    if (open && isMobile) {
+      setOpen(false);
+    }
+  });
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -75,7 +84,6 @@ export const Sidebar = () => {
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
         )}
-        onClick={() => setOpen(false)}
       />
 
       <aside
@@ -83,6 +91,7 @@ export const Sidebar = () => {
           "fixed md:static inset-y-0 left-0 z-50 w-64 bg-sidebar border-r border-sidebar-border flex flex-col transition-transform duration-300",
           open ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         )}
+        ref={sidebarRef}
       >
         <div className="p-6 border-b border-sidebar-border">
           <div className="flex items-center gap-3">
