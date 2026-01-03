@@ -9,9 +9,12 @@ import {
   BarChart3,
   Bell,
   Settings,
+  LogOut,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useIsMobile } from "../../hooks/useMobile";
+import { Button } from "../ui/button";
+import { useAuthActions } from "../../hooks/useAuth";
 
 const menu = [
   { id: "dashboard", label: "Dashboard", to: "/", icon: Home },
@@ -33,6 +36,7 @@ const menu = [
 
 export const Sidebar = () => {
   const [open, setOpen] = useState(false);
+  const { logout } = useAuthActions();
 
   const isMobile = useIsMobile();
 
@@ -108,6 +112,18 @@ export const Sidebar = () => {
             </Link>
           ))}
         </nav>
+        <div className="p-4 border-t border-sidebar-border">
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full justify-start gap-3"
+            onClick={() => logout.mutate()}
+            disabled={logout.isPending}
+          >
+            <LogOut className="w-5 h-5" />
+            {logout.isPending ? "Saindo..." : "Sair"}
+          </Button>
+        </div>
       </aside>
     </>
   );

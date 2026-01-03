@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as InsightsRouteImport } from './routes/insights'
-import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ConfigurationsRouteImport } from './routes/configurations'
 import { Route as BillsRouteImport } from './routes/bills'
 import { Route as IndexRouteImport } from './routes/index'
@@ -24,11 +23,6 @@ const NotificationsRoute = NotificationsRouteImport.update({
 const InsightsRoute = InsightsRouteImport.update({
   id: '/insights',
   path: '/insights',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConfigurationsRoute = ConfigurationsRouteImport.update({
@@ -51,7 +45,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bills': typeof BillsRoute
   '/configurations': typeof ConfigurationsRoute
-  '/dashboard': typeof DashboardRoute
   '/insights': typeof InsightsRoute
   '/notifications': typeof NotificationsRoute
 }
@@ -59,7 +52,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/bills': typeof BillsRoute
   '/configurations': typeof ConfigurationsRoute
-  '/dashboard': typeof DashboardRoute
   '/insights': typeof InsightsRoute
   '/notifications': typeof NotificationsRoute
 }
@@ -68,33 +60,19 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/bills': typeof BillsRoute
   '/configurations': typeof ConfigurationsRoute
-  '/dashboard': typeof DashboardRoute
   '/insights': typeof InsightsRoute
   '/notifications': typeof NotificationsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/bills'
-    | '/configurations'
-    | '/dashboard'
-    | '/insights'
-    | '/notifications'
+  fullPaths: '/' | '/bills' | '/configurations' | '/insights' | '/notifications'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/bills'
-    | '/configurations'
-    | '/dashboard'
-    | '/insights'
-    | '/notifications'
+  to: '/' | '/bills' | '/configurations' | '/insights' | '/notifications'
   id:
     | '__root__'
     | '/'
     | '/bills'
     | '/configurations'
-    | '/dashboard'
     | '/insights'
     | '/notifications'
   fileRoutesById: FileRoutesById
@@ -103,7 +81,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BillsRoute: typeof BillsRoute
   ConfigurationsRoute: typeof ConfigurationsRoute
-  DashboardRoute: typeof DashboardRoute
   InsightsRoute: typeof InsightsRoute
   NotificationsRoute: typeof NotificationsRoute
 }
@@ -122,13 +99,6 @@ declare module '@tanstack/react-router' {
       path: '/insights'
       fullPath: '/insights'
       preLoaderRoute: typeof InsightsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/configurations': {
@@ -159,7 +129,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BillsRoute: BillsRoute,
   ConfigurationsRoute: ConfigurationsRoute,
-  DashboardRoute: DashboardRoute,
   InsightsRoute: InsightsRoute,
   NotificationsRoute: NotificationsRoute,
 }
