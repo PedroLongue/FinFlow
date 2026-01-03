@@ -22,13 +22,7 @@ function RootLayout() {
     );
   }
 
-  if (!isAuthenticated) {
-    return (
-      <div className="bg-zinc-950 text-zinc-100 min-h-screen">
-        <Login />
-      </div>
-    );
-  }
+  if (!isAuthenticated) return <Login />;
 
   return (
     <div className="flex h-screen bg-zinc-950 text-zinc-100">
