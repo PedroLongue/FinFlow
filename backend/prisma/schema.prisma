@@ -47,6 +47,5 @@ enum BillStatus {
   PENDING // Pendente
   PAID // Pago
   OVERDUE // Vencido
-  SCHEDULED // Agendado para pagamento
   CANCELLED // Cancelado
 }

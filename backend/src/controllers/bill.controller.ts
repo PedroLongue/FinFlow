@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { prisma } from "../db/prisma.js";
-import { categorizeBillAI } from "../services/billCategorizer.js";
+import { prisma } from "../db/prisma";
+import { categorizeBillAI } from "../services/billCategorizer";
 
 interface AuthRequest extends Request {
   userId?: string;
@@ -26,7 +26,7 @@ export const createBill = async (req: AuthRequest, res: Response) => {
     amount: number;
     dueDate: string; // ISO
     category: string;
-    status?: "PENDING" | "PAID" | "OVERDUE" | "SCHEDULED" | "CANCELLED";
+    status?: "PENDING" | "PAID" | "OVERDUE" | "CANCELLED";
     barcode?: string | null;
     description?: string | null;
     paidAt?: string | null;
@@ -89,16 +89,26 @@ export const listBills = async (req: AuthRequest, res: Response) => {
     | "PENDING"
     | "PAID"
     | "OVERDUE"
-    | "SCHEDULED"
-    | "CANCELLED";
+    | "CANCELLED"
+    | "UNPAID";
 
   const category = req.query.category ? String(req.query.category) : undefined;
 
-  const where = {
+  const where: any = {
     userId,
-    ...(status ? { status } : {}),
-    ...(category ? { category } : {}),
   };
+
+  if (status === "UNPAID") {
+    where.status = {
+      in: ["PENDING", "OVERDUE"],
+    };
+  } else if (status) {
+    where.status = status;
+  }
+
+  if (category) {
+    where.category = category;
+  }
 
   const [total, bills] = await Promise.all([
     prisma.bill.count({ where }),
@@ -159,7 +169,7 @@ export const updateBill = async (req: AuthRequest, res: Response) => {
     amount?: number;
     dueDate?: string; // ISO
     category?: string;
-    status?: "PENDING" | "PAID" | "OVERDUE" | "SCHEDULED" | "CANCELLED";
+    status?: "PENDING" | "PAID" | "OVERDUE" | "CANCELLED";
     barcode?: string | null;
     description?: string | null;
     paidAt?: string | null;
